@@ -273,55 +273,7 @@
 
         .next-btn:active { transform: translateY(2px); background-color: #444; }
 
-    </style>
-</head>
-<body>
 
-    <div class="app-container">
-        <!-- 頂部標籤 -->
-        <div class="tabs-container">
-            <div class="tab-btn active" id="tab-original" onclick="switchTab('original')">原題 (26)</div>
-            <div class="tab-btn" id="tab-new" onclick="switchTab('new')">新題 (12)</div>
-            <div class="tab-btn" id="tab-civics" onclick="switchTab('civics')">問答 (100)</div>
-        </div>
-
-        <!-- 統計數據 -->
-        <div class="stats-display" id="stats-display">正確率: 0%</div>
-
-        <!-- 圓點進度網格 -->
-        <div class="dots-progress-container" id="dots-progress"></div>
-
-        <!-- 標題 -->
-        <div class="header">
-            <div class="question-title" id="title-display">第一題</div>
-        </div>
-
-        <!-- 中間答案卡 -->
-        <div class="answer-card" id="answer-card" onclick="toggleAnswer()">
-            <span class="hint-text" id="hint-text">點擊查看答案</span>
-            <div class="content-area" id="content-area">
-                <div class="question-text" id="question-text"></div>
-                <div class="answer-text" id="answer-text"></div>
-            </div>
-        </div>
-
-        <!-- 評判模塊 -->
-        <div class="judgment-area" id="judgment-area">
-            <div class="judgment-title">你答對了嗎？</div>
-            <div class="judgment-buttons">
-                <button class="judge-btn btn-correct" onclick="recordResult(true)">對</button>
-                <button class="judge-btn btn-wrong" onclick="recordResult(false)">錯</button>
-            </div>
-        </div>
-
-        <!-- 底部控制 -->
-        <div class="controls-area">
-            <button class="play-btn" onclick="playAudio()">
-                <div class="play-icon"></div>
-            </button>
-            <button class="next-btn" onclick="nextQuestion()"></button>
-        </div>
-    </div>
 
     <script>
         // --- 數據庫 ---
