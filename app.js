@@ -196,9 +196,6 @@ function startQuizMode(mode) {
     if (glossaryMenuScreen) glossaryMenuScreen.classList.add('hidden'); 
     
     document.getElementById('quiz-screen').classList.remove('hidden');
-
-    // 關鍵：確保新頁面從最上方開始
-    window.scrollTo(0, 0);
     
     // 初始化按鈕樣式
     const mainBtn = document.getElementById('quiz-main-btn');
@@ -500,9 +497,6 @@ function startSession(mode, catId = 0) {
     glossaryMenuScreen.classList.add('hidden');
     practiceScreen.classList.remove('hidden');
 
-    // 關鍵：捲動到頂部
-    window.scrollTo(0, 0);
-    
     updateMainButtonText();
     loadQuestion(false);
 }
@@ -532,7 +526,6 @@ function exitPractice() {
     } else {
         homeScreen.classList.remove('hidden');
     }
-    window.scrollTo(0, 0);
 }
 
 // 清除語音動畫與時間軸
@@ -854,7 +847,6 @@ function saveBookmarks() {
 function showBookmarks() {
     homeScreen.classList.add('hidden');
     bookmarkScreen.classList.remove('hidden');
-    window.scrollTo(0, 0);
     switchTab('personal');
 }
 function exitBookmarks() {
