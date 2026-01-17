@@ -19,14 +19,15 @@
         }
 
         body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-color);
-            height: 100vh;
-            overflow: hidden; /* Prevent whole page scroll */
-            display: flex;
-            flex-direction: column;
-        }
+    margin: 0;
+    padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom) 0; /* 自動適應安全區域 */
+    background-color: var(--bg-color);
+    height: 100vh;
+    height: 100svh; /* 支援現代瀏覽器的小視窗高度，避免底部被工具列擋住 */
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
 
         /* --- Common Utils --- */
         .hidden { display: none !important; }
@@ -187,6 +188,7 @@
         }
 
         .officer-avatar {
+         flex-shrink: 0; /* 不會被壓縮 */
             width: 80px;
             height: 80px;
             background: #d8d8ff;
@@ -202,10 +204,25 @@
         }
 
         .question-box {
-            background: var(--white);
-            color: var(--text-main);
-            width: 100%;
-            max-width: 500px;
+            .question-box {
+    background: var(--white);
+    color: var(--text-main);
+    width: 100%;
+    max-width: 500px;
+    
+    flex: 1;          /* 重要：自動佔滿剩餘高度 */
+    min-height: 0;    /* 重要：Flex 彈性壓縮的關鍵，允許高度小於內容 */
+    margin: 10px 0;   /* 給卡片一點上下間距 */
+    
+    overflow-y: auto; /* 內容多時內部滾動 */
+    border-radius: 20px;
+    padding: 25px;
+    display: block;
+    text-align: left;
+    border: 1px solid #79abe1;
+    box-shadow: 0 10px 30px rgba(163, 187, 255, 0.3);
+    -webkit-overflow-scrolling: touch;
+}
     
          /* 1. 設定固定或最大高度，避免撐破頁面 */
             height: 220px; 
@@ -644,12 +661,24 @@ button#main-btn.main-action-btn.colorful {
 
 /* 測試分頁背景與布局 */
 #quiz-screen {
-    background-color: #ffffff; 
-    flex: 1; display: flex; flex-direction: column; align-items: center; padding: 20px; color: #333;
+  background-color: #ffffff;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    color: #333;
+    overflow: hidden; /* 防止整個頁面滾動 */
 }
 
 /* 頂部圓點容器 */
-.quiz-header { width: 100%; max-width: 500px; margin-bottom: 10px; }
+/* 頂部圓點容器固定高度 */
+.quiz-header {
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 10px;
+    flex-shrink: 0; /* 不會被壓縮 */
+}
 .header-top { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 10px; }
 
 .dots-container {
