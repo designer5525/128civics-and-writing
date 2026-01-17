@@ -471,13 +471,26 @@ button#main-btn.main-action-btn.colorful {
 }
 
 
-        .list-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            min-height: 0; /* Crucial for scrolling inside flex */
-            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-        }
+      .list-container {
+    /* 1. 核心：自適應高度 */
+    flex: 0 1 auto; 
+    
+    /* 2. 限制最大高度：在手機上不會頂到天花板，在電腦上也不會無限延伸 */
+    max-height: 65vh; 
+    
+    /* 3. 電腦端優化：如果屏幕特別大，可以設一個像素上限，防止列表拉得太長 */
+    /* max-height: 600px; */ /* 如果你希望在超大屏幕上有個保底上限，可以取消這行註釋 */
+
+    overflow-y: auto;
+    padding: 20px;
+    min-height: 0; 
+    -webkit-overflow-scrolling: touch;
+    
+    /* 4. 居中顯示（針對電腦端） */
+    width: 100%;
+    max-width: 600px; /* 限制寬度，電腦端看才不會太扁 */
+    margin: 0 auto;   /* 容器水平居中 */
+}
 
         /* Custom Scrollbar Styling */
         .list-container::-webkit-scrollbar {
