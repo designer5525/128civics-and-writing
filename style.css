@@ -18,16 +18,15 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-       body {
+body {
     margin: 0;
     padding: 0;
-    background-color: var(--bg-color);
-    /* 核心修正：使用動態高度並防止溢出 */
+    /* 使用 dvh (Dynamic Viewport Height) 確保在 Chrome/Safari 網址列伸縮時高度正確 */
+    height: 100vh;
     height: 100dvh; 
-    width: 100vw;
-    overflow: hidden; 
-    display: flex;
-    flex-direction: column;
+    overflow: hidden;
+    position: fixed; /* 防止頁面被網址列推移 */
+    width: 100%;
 }
 
         /* --- Common Utils --- */
@@ -131,17 +130,15 @@
         .glossary-item-btn span.icon { font-size: 24px; margin-right: 10px; }
         .glossary-item-btn:active { background: #E5E5EA; }
 
-        /* --- Practice Screen (Dark Mode) --- */
-       #practice-screen, #quiz-screen {
-    flex: 1;
+        #quiz-screen, #practice-screen {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    /* 這裡設定硬性安全距離：頂部 20px，左右 20px，底部固定留 40px */
-    /* 40px 足夠避開絕大多數手機的底部橫條 */
-    padding: 20px 20px 40px 20px; 
+    height: 100%; /* 填滿 body */
+    width: 100%;
+    /* 硬性避開上方網址列與下方安全區 */
+    /* 頂部給 60px 確保題目序號不被遮擋，底部給 40px 避開橫條 */
+    padding: 60px 20px 40px 20px; 
     box-sizing: border-box;
-    position: relative;
 }
 
         /* Progress Indicator */
@@ -655,11 +652,16 @@ button#main-btn.main-action-btn.colorful {
 .quiz-header {
     width: 100%;
     max-width: 500px;
+    flex-shrink: 0;
     margin-bottom: 10px;
-    flex-shrink: 0; /* 不會被壓縮 */
+    /* 確保這部分不會因為 padding 不夠而被吃掉 */
+    display: flex;
+    flex-direction: column;
 }
-.header-top { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 10px; }
-
+.header-top {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
 .dots-container {
     display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
 }
