@@ -22,7 +22,9 @@
             margin: 0;
             padding: 0;
             background-color: var(--bg-color);
+            /* 修正手機 Chrome 高度陷阱 */
             height: 100vh;
+            height: 100dvh;
             overflow: hidden; /* Prevent whole page scroll */
             display: flex;
             flex-direction: column;
@@ -35,50 +37,63 @@
         .btn:active { transform: scale(0.95); }
 
         /* --- Home Screen --- */
-        #home-screen, #glossary-menu-screen, #practice-screen, #quiz-screen {
+        #home-screen, #glossary-menu-screen, {
             flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+           /* 自動避開頂部瀏海，並確保內容不貼頂 */
+            padding: calc(env(safe-area-inset-top) + 20px) 20px 20px 20px;
             overflow-y: auto; /* Allow home to scroll if screen is small */
         }
+      #practice-screen, #quiz-screen {
+           flex: 1;
+           display: flex;
+           flex-direction: column;
+           height: 100dvh;
+           /* 避開頂部瀏海 */
+           padding: calc(env(safe-area-inset-top) + 10px) 20px calc(env(safe-area-inset-bottom) + 10px) 20px;
+           justify-content: space-between; /* 確保按鈕被推到底部 */
+       }
+
 
              
 /* --- Glossary Menu 頁面修正 --- */
 #glossary-menu-screen {
     display: flex;
     flex-direction: column;
-    height: 100vh;      /* 強制這頁等於螢幕高度 */
+    height: 100dvh;      /* 強制這頁等於螢幕高度 */
     height: -webkit-fill-available; /* 修正 iOS 瀏覽器工具欄遮擋問題 */
     padding: 0;         /* 移除內邊距 */
     overflow: hidden;   /* 禁止外層滾動 */
 }
 
 /* 確保頂部文字不縮小 */
-#glossary-menu-screen .contact-text {
+#glossary-menu-screen .contact-text .nav-bar{
     flex-shrink: 0;
-    margin: 20px 0 10px 0;
+    padding-top: calc(env(safe-area-inset-top) + 10px);
+    margin: 0;
     text-align: center;
+    background: var(--bg-color);
 }
 
-/* 關鍵：讓列表容器自動填滿剩餘空間並允許內部滾動 */
-#glossary-menu-screen #reading-list-container {
-    flex: 1;            /* 佔滿中間所有剩餘空間 */
-    overflow-y: auto;   /* 內容過多時在這裡面滾動 */
-    min-height: 0;      /* 確保 flex 縮放正常 */
-    padding: 10px 16px;
-    -webkit-overflow-scrolling: touch; /* 讓 iPhone 滑動更流暢 */
+/* 中間列表區：關鍵修復 */
+#reading-list-container, #bookmark-screen .list-container {
+    flex: 1;           /* 佔滿剩餘空間 */
+    overflow-y: auto;  /* 僅允許此區域滾動 */
+    min-height: 0;     /* 防止 flex 容器被內容撐破 */
+    padding: 10px 20px;
+    -webkit-overflow-scrolling: touch;
 }
 
-/* 確保底部按鈕區固定且不縮小 */
-#glossary-menu-screen > div:last-child {
-    flex-shrink: 0;    /* 禁止壓縮，確保按鈕永遠可見 */
-    padding: 20px 20px calc(20px + env(safe-area-inset-bottom)); /* 考慮 iPhone 底部黑條安全區域 */
+/* 底部按鈕區：避開底部黑條 */
+#glossary-menu-screen > div:last-child, #bookmark-screen .bottom-btn-area {
+    flex-shrink: 0;
+    padding: 15px 20px calc(env(safe-area-inset-bottom) + 15px) 20px;
+    background: var(--bg-color);
     display: flex;
     justify-content: center;
-    background: var(--bg-color); /* 增加背景色防止列表內容穿透 */
 }
       
 
