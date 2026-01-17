@@ -37,16 +37,25 @@
         .btn:active { transform: scale(0.95); }
 
         /* --- Home Screen --- */
-        #home-screen, #glossary-menu-screen, {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-           /* 自動避開頂部瀏海，並確保內容不貼頂 */
-            padding: calc(env(safe-area-inset-top) + 60px) 20px 20px 20px;
-            overflow-y: auto; /* Allow home to scroll if screen is small */
-        }
+        #home-screen {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 確保內容居中 */
+    justify-content: flex-start; 
+    padding: calc(env(safe-area-inset-top) + 20px) 20px 20px 20px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* --- 跟讀頁 (#glossary-menu-screen) 修正 --- */
+#glossary-menu-screen {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    padding: 0; /* 這裡設為 0，改由內部區域撐開 */
+    overflow: hidden;
+}
       #practice-screen, #quiz-screen {
            flex: 1;
            display: flex;
