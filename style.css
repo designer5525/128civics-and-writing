@@ -19,7 +19,7 @@
         }
 
         body {
-    margin: 0;
+    margin: 30;
     padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom) 0; /* 自動適應安全區域 */
     background-color: var(--bg-color);
     height: 100vh;
