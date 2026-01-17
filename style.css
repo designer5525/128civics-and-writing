@@ -326,15 +326,15 @@
         .click-hint span { margin-top: 10px; font-size: 18px; font-weight: bold; }
 
        .controls-area {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 500px;
-    flex-shrink: 0;   /* 重要：底部按鈕絕對不被壓縮 */
-    margin-top: auto; /* 確保推到最底部 */
-    padding-bottom: 10px;
-}
+     display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 5px;
+            width: 100%;
+            max-width: 500px;
+        }
+
 
         .round-btn {
             width: 60px;
