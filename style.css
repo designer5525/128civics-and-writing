@@ -1,707 +1,187 @@
- <style>
-        :root {
-            --primary-color: #5856D6; /* iOS Purple/Blue */
-            --primary-light: #7A78EA;
-            --bg-color: #F2F2F7;
-            --dark-bg: #1C1C1E;
-            --card-bg: #FFFFFF;
-            --text-main: #000000;
-            --text-sub: #8E8E93;
-            --white: #FFFFFF;
-            --danger: #FF3B30;
-            --secondary: #8E8E93;
-        }
+<style>
+    :root {
+        --primary-color: #5856D6;
+        --primary-light: #7A78EA;
+        --bg-color: #F2F2F7;
+        --dark-bg: #1C1C1E;
+        --card-bg: #FFFFFF;
+        --text-main: #000000;
+        --text-sub: #8E8E93;
+        --white: #FFFFFF;
+        --danger: #FF3B30;
+        --secondary: #8E8E93;
+    }
 
-        * {
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
+    * {
+        box-sizing: border-box;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        -webkit-tap-highlight-color: transparent;
+    }
 
-body {
-    margin: 0;
-    padding: 0;
-    /* 改為 min-height，讓頁面可以根據內容長高 */
-    min-height: 100dvh; 
-    height: auto; 
-    /* 允許垂直捲動 */
-    overflow-y: auto; 
-    display: block; /* 這裡改回 block 比較好處理長頁面 */
-    background-color: var(--bg-color);
-}
+    /* --- 基礎容器修正 --- */
+    body {
+        margin: 0;
+        padding: 0;
+        min-height: 100dvh; 
+        height: auto; 
+        overflow-y: auto; /* 開啟全局捲動 */
+        background-color: var(--bg-color);
+        display: block;
+    }
 
-        /* --- Common Utils --- */
-        .hidden { display: none !important; }
-        .invisible { opacity: 0 !important; }
-        .btn { border: none; cursor: pointer; outline: none; transition: transform 0.1s; }
-        .btn:active { transform: scale(0.95); }
+    .hidden { display: none !important; }
+    .invisible { opacity: 0 !important; }
+    .btn { border: none; cursor: pointer; outline: none; transition: transform 0.1s; }
+    .btn:active { transform: scale(0.95); }
 
-        /* --- Home Screen --- */
-        #home-screen, #glossary-menu-screen {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            overflow-y: auto; /* Allow home to scroll if screen is small */
-        }
+    /* --- 首頁與選單 --- */
+    #home-screen, #glossary-menu-screen {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 40px 20px;
+        min-height: 100dvh;
+    }
 
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .header h1 {
-            color: #1a1a1a;
-            font-size: 28px;
-            margin: 0;
-            font-weight: 700;
-        }
-        .header h2 {
-            color: var(--primary-color);
-            font-size: 32px;
-            margin: 5px 0 0 0;
-            font-weight: 800;
-        }
+    .header { text-align: center; margin-bottom: 30px; }
+    .header h1 { color: #1a1a1a; font-size: 28px; margin: 0; font-weight: 700; }
+    .header h2 { color: var(--primary-color); font-size: 32px; margin: 5px 0 0 0; font-weight: 800; }
 
-        .grid-menu {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            width: 100%;
-            max-width: 500px;
-        }
-       
+    .grid-menu {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        width: 100%;
+        max-width: 500px;
+    }
 
-        .menu-card {
-            background: var(--primary-color);
-            border-radius: 24px;
-            padding: 25px 15px;
-            text-align: center;
-            color: var(--white);
-            box-shadow: 0 0px 10px rgba(88, 86, 214, 0.3);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 120px;
-            cursor: pointer;
-        }
-        
-        .menu-card.yellow {
-            background: rgb(255, 243, 232);
-            color: var(--text-main);
-            border: 3px solid #ffb45d;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-        }
+    .menu-card {
+        background: var(--primary-color);
+        border-radius: 24px;
+        padding: 25px 15px;
+        text-align: center;
+        color: var(--white);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 120px;
+    }
+    .menu-card.yellow { background: rgb(255, 243, 232); color: var(--text-main); border: 3px solid #ffb45d; }
+    .menu-card.blue { background: rgb(212, 238, 255); color: var(--text-main); border: 3px solid #5aa7ff; }
 
-        .menu-card.blue {
-            background: rgb(212, 238, 255);
-            color: var(--text-main);
-            border: 3px solid #5aa7ff;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-        }
+    /* --- 測試介面 (重點修正區) --- */
+    #quiz-screen, #practice-screen {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        min-height: 100dvh;
+        /* 60px 避開 Chrome 頂部，220px 留給底部固定按鈕 */
+        padding: 60px 20px 220px 20px; 
+        box-sizing: border-box;
+        overflow-y: visible; /* 允許整體捲動 */
+    }
 
-        .menu-icon { font-size: 30px; margin-bottom: 5px; }
-        .menu-title { font-size: 20px; font-weight: bold; margin-bottom: 5px; line-height: 1.2; }
-        .menu-sub { font-size: 14px; opacity: 0.9; }
-        .menu-card.yellow .menu-card.blue .menu-sub { color: var(--text-sub); }
+    .quiz-header {
+        width: 100%;
+        max-width: 500px;
+        flex-shrink: 0;
+        margin-bottom: 10px;
+    }
 
-        /* Glossary Menu Specific */
-        .glossary-list {
-            width: 100%;
-            max-width: 400px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .glossary-item-btn {
-            background: var(--white);
-            color: var(--text-main);
-            padding: 20px;
-            border-radius: 16px;
-            font-size: 18px;
-            font-weight: 600;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            text-align: left;
-        }
-        .glossary-item-btn span.icon { font-size: 24px; margin-right: 10px; }
-        .glossary-item-btn:active { background: #E5E5EA; }
+    .dots-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+        max-height: 100px;
+        overflow-y: auto; /* 圓點太多時可捲動 */
+        padding: 5px;
+    }
 
-       #quiz-screen, #practice-screen {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    /* 確保至少跟螢幕一樣高 */
-    min-height: 100dvh; 
-    /* 頂部預留空間避開網址列，底部預留空間避開按鈕 */
-    padding: 60px 20px 180px 20px; 
-    box-sizing: border-box;
-    width: 100%;
-        
-}
+    .dot { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid #BCBCBC; background: white; }
+    .dot.current { outline: 2px solid #000; border-color: #000; }
+    .dot.correct { background-color: #67B367; border-color: #67B367; }
+    .dot.wrong { background-color: #E85A4F; border-color: #E85A4F; }
 
-        /* Progress Indicator */
-        .progress-indicator {
-            position: absolute;
-            top: 20px;
-            right: 0;
-            left: 0;
-            text-align: center;
-            color: rgb(105, 149, 231);
-            font-size: 18px;
-            font-weight: 600;
-            z-index: 10;
-        }
+    .officer-avatar {
+        width: 70px;
+        height: 70px;
+        background: #d8d8ff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+        border: 3px solid var(--primary-color);
+        margin: 10px 0;
+        flex-shrink: 0;
+    }
 
-        /* Audio Wave Animation */
-        .audio-wave-container {
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            margin-top: 40px; 
-            margin-bottom: 10px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        .audio-wave-container.playing { opacity: 1; }
-        .wave-bar {
-            width: 6px;
-            height: 100%;
-            background: var(--primary-color);
-            border-radius: 3px;
-            animation: wave 1s infinite ease-in-out;
-        }
-        .wave-bar:nth-child(1) { animation-delay: 0.0s; height: 40%; }
-        .wave-bar:nth-child(2) { animation-delay: 0.1s; height: 70%; }
-        .wave-bar:nth-child(3) { animation-delay: 0.2s; height: 100%; }
-        .wave-bar:nth-child(4) { animation-delay: 0.3s; height: 70%; }
-        .wave-bar:nth-child(5) { animation-delay: 0.4s; height: 40%; }
-        @keyframes wave {
-            0%, 100% { transform: scaleY(0.5); opacity: 0.5; }
-            50% { transform: scaleY(1); opacity: 1; box-shadow: 0 0 10px var(--primary-color); }
-        }
+    /* 關鍵：卡片捲動與高度平衡 */
+    .question-box {
+        background: var(--white);
+        color: var(--text-main);
+        width: 100%;
+        max-width: 500px;
+        flex: none; /* 不強制撐滿，讓高度由內容決定 */
+        min-height: 120px;
+        max-height: 45vh; /* 如果文字超長，卡片最高佔螢幕 45% */
+        overflow-y: auto; /* 超過 max-height 時內部捲動 */
+        border-radius: 20px;
+        padding: 25px;
+        margin: 10px 0;
+        border: 1px solid #79abe1;
+        box-shadow: 0 10px 30px rgba(163, 187, 255, 0.3);
+        -webkit-overflow-scrolling: touch;
+    }
 
-        .officer-avatar {
-         flex-shrink: 0; /* 不會被壓縮 */
-            width: 80px;
-            height: 80px;
-            background: #d8d8ff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 45px;
-            border: 3px solid var(--primary-color);
-            /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);*/
-            margin-bottom: 10px;
-            z-index: 2;
-        }
+    .question-content { font-size: 22px; font-weight: 600; line-height: 1.4; }
 
-        .question-box {
-    background: var(--white);
-    color: var(--text-main);
-    width: 100%;
-    max-width: 500px;
-    
-    flex: 1;          /* 重要：自動佔滿剩餘高度 */
-    min-height: 50px;    /* 重要：Flex 彈性壓縮的關鍵，允許高度小於內容 */
-    margin: 10px 0;   /* 給卡片一點上下間距 */
-    
-    overflow-y: auto; /* 內容多時內部滾動 */
-    border-radius: 20px;
-    padding: 25px;
-    display: block;
-    text-align: left;
-    border: 1px solid #79abe1;
-    box-shadow: 0 10px 30px rgba(163, 187, 255, 0.3);
-    -webkit-overflow-scrolling: touch;
-}
-   
-        /* N400 Question Style */
-        .question-content {
-            font-size: 22px;
-            font-weight: 600;
-            line-height: 1.4;
-        }
+    /* --- 底部按鈕固定區 --- */
+    .controls-area {
+        position: fixed; /* 固定在螢幕底部 */
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(to top, var(--bg-color) 80%, rgba(242,242,247,0));
+        padding: 15px 20px 40px 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        z-index: 1000;
+    }
 
-        /* Glossary Content Style */
-        .gloss-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-        }
-        .gloss-word {
-            font-size: 36px;
-            font-weight: 800;
-            color: var(--primary-color);
-            margin-bottom: 5px;
-            line-height: 1.1;
-        }
-        .gloss-phonetic {
-            font-size: 16px;
-            color: #8E8E93;
-            font-family: monospace;
-            margin-bottom: 5px;
-        }
-        .gloss-cn {
-            font-size: 20px;
-            color: #333;
-            margin-bottom: 20px;
-            font-weight: 500;
-        }
-        .gloss-divider {
-            width: 100%;
-            height: 1px;
-            background: #E5E5EA;
-            margin-bottom: 20px;
-        }
-        .gloss-def-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            width: 100%;
-        }
-        .gloss-def {
-            font-size: 24px;
-            font-weight: 700;
-            color: #000;
-            line-height: 1.3;
-        }
-        .audio-sm-btn {
-            background: #F2F2F7;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--primary-color);
-            font-size: 16px;
-            flex-shrink: 0;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .audio-sm-btn:active {
-            transform: scale(0.9);
-            background: #E5E5EA;
-        }
+    .quiz-main-btn {
+        width: 100%; max-width: 500px; height: 55px; border-radius: 100px;
+        background: #4A90E2 !important; color: white !important;
+        font-size: 20px; font-weight: bold; margin-top: 10px;
+    }
+    .quiz-main-btn.next-mode { background: #333333 !important; }
 
-        .click-hint {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: #8E8E93;
-        }
-        .click-hint span { margin-top: 10px; font-size: 18px; font-weight: bold; }
+    .judge-group { display: none; width: 100%; flex-direction: column; gap: 10px; margin-bottom: 10px; }
+    .judge-group.show { display: flex; }
+    .btn-judge { width: 100%; height: 50px; border-radius: 100px; color: white; font-weight: bold; font-size: 20px; }
+    .btn-correct { background-color: #46d573; }
+    .btn-wrong { background-color: #ec5449; }
 
-       .controls-area {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 500px;
-    margin-top: auto;  /* 推到最底部 */
-    flex-shrink: 0;    /* 確保按鈕區域不會因為卡片太大而被壓扁 */
-}
+    .bottom-actions {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        max-width: 500px;
+        margin-top: 10px;
+    }
 
+    /* --- 其他頁面樣式維持 --- */
+    .reading-card {
+        background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 12px;
+        display: flex; align-items: center; gap: 12px;
+    }
+    .reading-en { font-size: 18px; font-weight: 800; color: #000; }
+    .reading-cn { font-size: 14px; color: #8E8E93; }
 
-        .round-btn {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.1);
-            color: var(--white);
-            font-size: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-       /* 1. 基礎樣式：預設狀態（白色背景，用於練習中） */
-.main-action-btn {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    border: none;
-    background: #FFFFFF !important; /* 確保練習時是白色 */
-    color: #000000 !important;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 8px 15px rgba(110, 142, 251, 0.4);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    transition: transform 0.1s ease, background 0.3s ease;
-    outline: none;
-    -webkit-tap-highlight-color: transparent;
-}
-
-/* 初始狀態：按鈕背景依然是白色，但文字和邊框變為藍色 */
-button#main-btn.main-action-btn.colorful {
-    color: #5856D6 !important;
-    border: 3px solid #5856D6 !important;
-    background-color: #FFFFFF !important;
-    /* 確保縮放動畫 */
-    transition: transform 0.1s ease-in-out;
-}
-
-/* 點擊時的縮放效果 */
-.main-action-btn:active {
-    transform: scale(0.9) !important;
-}
-
-    /* 底部功能按鈕（退出/重來） */
-.bottom-actions {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    max-width: 500px;
-    margin-top: 10px;
-    flex-shrink: 0;
-}
-
-        .rect-btn {
-            background: #cbe8ff;
-            color: var(--white);
-            padding: 12px 25px;
-            border-radius: 12px;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .bookmarked { color: #FFD700; } 
-
-        /* --- Bookmark Screen --- */
-        #bookmark-screen {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: var(--bg-color);
-            height: 100vh; /* Fixed height for flex container */
-            overflow: hidden; /* Prevent body scroll */
-        }
-
-        .nav-bar {
-            background: var(--white);
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            box-shadow: 0 1px 10px rgba(0,0,0,0.05);
-            flex-shrink: 0;
-        }
-        .nav-back { font-size: 24px; margin-right: 15px; cursor: pointer; }
-        .nav-title { font-size: 20px; font-weight: bold; }
-
-        /*
-
-        .tabs {
-            display: flex;
-            background: var(--white);
-            padding: 0 20px;
-            border-bottom: 1px solid #E5E5EA;
-            overflow-x: auto;
-            flex-shrink: 0;
-        }
-        .tab {
-            margin-right: 20px;
-            padding: 15px 5px;
-            cursor: pointer;
-            color: var(--text-sub);
-            font-weight: 600;
-            white-space: nowrap;
-        }
-        .tab.active {
-            color: var(--primary-color);
-            border-bottom: 3px solid var(--primary-color);
-        }
-
-        */
-        
-        /* 標籤欄基礎樣式 */
-.tabs {
-    display: flex;
-    justify-content: space-around;
-    border-bottom: 1px solid #E5E5EA; /* 底部分隔線 */
-    background: #fff;
-}
-
-.tab {
-    padding: 12px 0;
-    font-size: 16px;
-    color: #8E8E93; /* 未選中時的灰色 */
-    cursor: pointer;
-    flex: 1;
-    text-align: center;
-    transition: all 0.2s; /* 增加平滑過渡效果 */
-    font-weight: 500;
-    position: relative;
-}
-
-/* 選中狀態樣式 (Active) */
-.tab.active {
-    color: #007AFF; /* 選中時的藍色 */
-    font-weight: bold;
-}
-
-/* 選中時下方的藍色橫條 */
-.tab.active::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 20%;
-    right: 20%;
-    height: 3px;
-    background: #007AFF;
-    border-radius: 3px 3px 0 0;
-}
-
-
-        .list-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            min-height: 0; /* Crucial for scrolling inside flex */
-            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-        }
-
-        /* Custom Scrollbar Styling */
-        .list-container::-webkit-scrollbar {
-            width: 6px;
-        }
-        .list-container::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .list-container::-webkit-scrollbar-thumb {
-            background-color: rgba(0,0,0,0.2);
-            border-radius: 3px;
-        }
-
-        .list-item {
-            background: var(--white);
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .list-audio-btn {
-            background: #F2F2F7;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            color: var(--primary-color);
-            font-size: 18px;
-        }
-
-        .list-text { flex: 1; font-size: 16px; line-height: 1.4; }
-        .list-remove { color: var(--danger); font-size: 20px; cursor: pointer; padding: 5px; }
-
-      .contact-section {
-    margin-top: 40px;
-    padding: 30px 15px 50px 15px; /* 增加底部間距，防止手機遮擋 */
-    text-align: center;
-    border-top: 1px dashed #ddd; /* 改為虛線更有設計感 */
-    width: 100%;
-    max-width: 500px;
-}
-
-.contact-text {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 10px;
-}
-
-/* 免責聲明卡片樣式 */
-.disclaimer-box {
-    background-color: #E5E5EA; /* 比背景稍深的灰色 */
-    padding: 16px;
-    border-radius: 16px;
-    margin-bottom: 25px;
-    text-align: left;
-    font-size: 13px; /* 稍微加大一點點，方便長輩閱讀 */
-    color: #3A3A3C;
-    line-height: 1.6;
-    border: 1px solid #D1D1D6;
-}
-.disclaimer-box strong {
-    color: #1C1C1E;
-    display: block;
-    margin-bottom: 6px;
-    font-size: 14px;
-} 
-/* 小紅書按鈕升級：加入漸變與陰影 */
-.xiaohongshu-btn {
-    background: linear-gradient(135deg, #ff2442 0%, #ff5263 100%); 
-    color: white;
-    border: none;
-    padding: 14px 28px;
-    border-radius: 30px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 6px 15px rgba(255, 36, 66, 0.3);
-    transition: all 0.2s ease;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none; /* 防止 <a> 標籤默認下劃線 */
-}
-
-.xiaohongshu-btn:hover {
-    box-shadow: 0 8px 20px rgba(255, 36, 66, 0.4);
-    transform: translateY(-2px);
-}
-
-.xiaohongshu-btn:active {
-    transform: scale(0.96);
-    box-shadow: 0 2px 8px rgba(255, 36, 66, 0.2);
-}
-
-/* 版本號微調 */
-.version-text {
-    font-size: 12px;
-    color: #AEAEB2;
-    margin-top: 20px;
-    letter-spacing: 0.5px;
-}
-
-/* --- 修正首頁滾動體驗 --- */
-#home-screen {
-    /* 確保在小螢幕手機上內容不會被切掉，且滾動流暢 */
-    -webkit-overflow-scrolling: touch; 
-    justify-content: flex-start; /* 改為頂部對齊，靠 margin 自動撐開，避免內容堆疊 */
-    padding-top: 40px;
-}
-
-/* 閱讀模塊樣式*/
-.reading-card {
-    background: #fff;
-    border-radius: 12px;
-    padding: 16px;
-    margin-bottom: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    cursor: pointer;
-    transition: transform 0.1s;
-}
-
-.reading-card:active {
-    transform: scale(0.98);
-    background: #F9F9F9;
-}
-
-.reading-content {
-    flex: 1;
-}
-
-.reading-en {
-    font-size: 18px;
-    font-weight: 800; /* 加粗 */
-    color: #000;      /* 深色 */
-    line-height: 1.4;
-    margin-bottom: 4px;
-}
-
-.reading-cn {
-    font-size: 14px;
-    color: #8E8E93;   /* 較淺色 */
-    font-weight: 500;
-}
-
-.reading-icon {
-    font-size: 20px;
-    color: #007AFF;
-    opacity: 0.8;
-}
-
-
-/* --- 測試模塊 --- */
-
-/* 測試分頁背景與布局 */
-#quiz-screen {
-  background-color: #ffffff;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    color: #333;
-    overflow: visible;
-}
-
-/* 頂部圓點容器 */
-/* 頂部圓點容器固定高度 */
-.quiz-header {
-    width: 100%;
-    max-width: 500px;
-    flex-shrink: 0;
-    margin-bottom: 10px;
-    /* 確保這部分不會因為 padding 不夠而被吃掉 */
-    display: flex;
-    flex-direction: column;
-}
-.header-top {
-    font-size: 16px;
-    margin-bottom: 8px;
-}
-.dots-container {
-    display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
-}
-
-.dot {
-    width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid #BCBCBC;
-    background: white; cursor: pointer; transition: all 0.2s;
-}
-.dot.current {outline: 2px solid #000000;
-    border-color: #000000; } /* 當前題目黑邊 */
-.dot.correct { background-color: #67B367; border-color: #67B367; } /* 綠色 */
-.dot.wrong { background-color: #E85A4F; border-color: #E85A4F; }   /* 紅色 */
-
-/* 測試專用長方形按鈕 */
-.quiz-main-btn {
-    width: 100%; max-width: 500px; height: 55px; border-radius: 100px;
-    background: #4A90E2 !important; color: white !important;
-    font-size: 20px; font-weight: bold; margin-top:10px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}  
-.quiz-main-btn.next-mode { background: #333333 !important; }
-
-/* 對錯按鈕組 */
-.quiz-controls { flex-direction: column; width: 100%; }
-/* 對錯按鈕組 */
-.judge-group {
-    display: none;
-    width: 100%;
-    flex-direction: column;
-    margin-bottom: 10px; /* 縮小原本負數的 margin */
-}
-.judge-group.show {
-    display: flex;
-}
-
-.btn-judge { flex: 1; height: 45px; border-radius: 100px; color: white; font-weight: bold; font-size: 20px; }
-.btn-correct { background-color: #46d573; }
-.btn-wrong { background-color: #ec5449; }
-
-    </style>
+    .contact-section { margin-top: 40px; padding-bottom: 50px; text-align: center; width: 100%; }
+    .disclaimer-box { background-color: #E5E5EA; padding: 16px; border-radius: 16px; font-size: 13px; text-align: left; }
+</style>
