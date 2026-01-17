@@ -19,16 +19,14 @@
         }
 
         body {
-    margin: 0;
-    padding: 0;
-    background-color: var(--bg-color);
-    /* 將原本的 overflow: hidden 改為只針對 X 軸隱藏 */
-    overflow-x: hidden; 
-    overflow-y: auto;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            height: 100vh;
+            overflow: hidden; /* Prevent whole page scroll */
+            display: flex;
+            flex-direction: column;
+        }
 
         /* --- Common Utils --- */
         .hidden { display: none !important; }
@@ -37,7 +35,7 @@
         .btn:active { transform: scale(0.95); }
 
         /* --- Home Screen --- */
-        #home-screen, #glossary-menu-screen {
+        #home-screen, #glossary-menu-screen, #practice-screen, #quiz-screen {
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -134,19 +132,16 @@
         /* --- Practice Screen (Dark Mode) --- */
         #practice-screen {
             background-color: var(--dark-bg);
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    /* 移除 justify-content: space-between; 改用 padding 支撐 */
-    justify-content: flex-start; 
-    padding: 60px 20px 40px 20px; /* 增加頂部間距給進度條 */
-    color: var(--white);
-    position: relative;
-    /* 核心修改：允許內容過長時滾動 */
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-}
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 40px 20px;
+            color: var(--white);
+            position: relative;
+        }
+
         /* Progress Indicator */
         .progress-indicator {
             position: absolute;
@@ -158,6 +153,36 @@
             font-size: 18px;
             font-weight: 600;
             z-index: 10;
+        }
+
+        /* Audio Wave Animation */
+        .audio-wave-container {
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 40px; 
+            margin-bottom: 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .audio-wave-container.playing { opacity: 1; }
+        .wave-bar {
+            width: 6px;
+            height: 100%;
+            background: var(--primary-color);
+            border-radius: 3px;
+            animation: wave 1s infinite ease-in-out;
+        }
+        .wave-bar:nth-child(1) { animation-delay: 0.0s; height: 40%; }
+        .wave-bar:nth-child(2) { animation-delay: 0.1s; height: 70%; }
+        .wave-bar:nth-child(3) { animation-delay: 0.2s; height: 100%; }
+        .wave-bar:nth-child(4) { animation-delay: 0.3s; height: 70%; }
+        .wave-bar:nth-child(5) { animation-delay: 0.4s; height: 40%; }
+        @keyframes wave {
+            0%, 100% { transform: scaleY(0.5); opacity: 0.5; }
+            50% { transform: scaleY(1); opacity: 1; box-shadow: 0 0 10px var(--primary-color); }
         }
 
         .officer-avatar {
@@ -180,9 +205,10 @@
             color: var(--text-main);
             width: 100%;
             max-width: 500px;
-           /* 核心修改：高度自適應，不要強制 flex: 1 */
-           flex-shrink: 0;
-            min-height: 200px; /* 設定一個最小保底高度，而不是固定高度 */
+
+            flex: 1;           /* 讓它佔滿剩餘空間 */
+            min-height: 100px; /* 設定一個最小保底高度，而不是固定高度 */
+            max-height: 300px;
     
         /* 2. 核心：內容過多時允許垂直滾動 */
             overflow-y: auto; 
@@ -563,7 +589,7 @@ button#main-btn.main-action-btn.colorful {
 }
 
 /* --- 修正首頁滾動體驗 --- */
-#home-screen {
+#home-screen, #practice-screen, #quiz-screen {
     /* 確保在小螢幕手機上內容不會被切掉，且滾動流暢 */
     -webkit-overflow-scrolling: touch; 
     justify-content: flex-start; /* 改為頂部對齊，靠 margin 自動撐開，避免內容堆疊 */
@@ -619,15 +645,7 @@ button#main-btn.main-action-btn.colorful {
 /* 測試分頁背景與布局 */
 #quiz-screen {
     background-color: #ffffff; 
-    flex: 1; 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    padding: 20px; 
-    color: #333;
-    /* 允許測試頁面垂直滾動 */
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    flex: 1; display: flex; flex-direction: column; align-items: center; padding: 20px; color: #333;
 }
 
 /* 頂部圓點容器 */
@@ -635,7 +653,7 @@ button#main-btn.main-action-btn.colorful {
 .header-top { display: flex; justify-content: space-between; font-weight: bold; margin-top: 10px; margin-bottom: 10px; }
 
 .dots-container {
-    display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-start;
+    display: flex; flex-wrap: wrap; gap: 8px; min-height:30px; max-height: 100px;justify-content: center;overflow-y: auto; 
 }
 
 .dot {
