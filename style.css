@@ -45,44 +45,7 @@
             overflow-y: auto; /* Allow home to scroll if screen is small */
         }
 
-             
-/* --- Glossary Menu 頁面修正 --- */
-#glossary-menu-screen {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;      /* 強制這頁等於螢幕高度 */
-    height: -webkit-fill-available; /* 修正 iOS 瀏覽器工具欄遮擋問題 */
-    padding: 0;         /* 移除內邊距 */
-    overflow: hidden;   /* 禁止外層滾動 */
-}
-
-/* 確保頂部文字不縮小 */
-#glossary-menu-screen .contact-text {
-    flex-shrink: 0;
-    margin: 20px 0 10px 0;
-    text-align: center;
-}
-
-/* 關鍵：讓列表容器自動填滿剩餘空間並允許內部滾動 */
-#glossary-menu-screen #reading-list-container {
-    flex: 1;            /* 佔滿中間所有剩餘空間 */
-    overflow-y: auto;   /* 內容過多時在這裡面滾動 */
-    min-height: 0;      /* 確保 flex 縮放正常 */
-    padding: 10px 16px;
-    -webkit-overflow-scrolling: touch; /* 讓 iPhone 滑動更流暢 */
-}
-
-/* 確保底部按鈕區固定且不縮小 */
-#glossary-menu-screen > div:last-child {
-    flex-shrink: 0;    /* 禁止壓縮，確保按鈕永遠可見 */
-    padding: 20px 20px calc(20px + env(safe-area-inset-bottom)); /* 考慮 iPhone 底部黑條安全區域 */
-    display: flex;
-    justify-content: center;
-    background: var(--bg-color); /* 增加背景色防止列表內容穿透 */
-}
-      
-
-.header {
+        .header {
             text-align: center;
             margin-bottom: 30px;
         }
