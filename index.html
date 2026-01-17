@@ -3,20 +3,9 @@
 <head>
     <link rel="manifest" href="manifest.json">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewpot-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
     <title>US Citizenship Civic/Reading/Listening</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        .version-text {
-            margin-top: 15px;
-            color: #8E8E93;
-            font-size: 12px;
-        }
-        .contact-text {
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-    </style>
 </head>
 
 <body>
@@ -25,7 +14,9 @@
             <h1>US Citizenship</h1>
             <h2>Civic/Reading/Listening</h2>
         </div>
-         <p class="contact-text">選擇一個模塊進入模擬面試.</p>
+        
+        <p class="contact-text" style="font-weight: bold; margin-bottom: 15px;">選擇一個模塊進入模擬面試.</p>
+        
         <div class="grid-menu">
             <div class="menu-card" onclick="startSession('personal')">
                 <div class="menu-icon">📋</div>
@@ -52,87 +43,74 @@
             </div>   
         </div>
 
-   <p class="contact-text">測試題【含錯題統計】</p>
-         <div class="grid-menu">
-
+        <p class="contact-text" style="font-weight: bold; margin: 25px 0 15px 0;">測試題【含錯題統計】</p>
+        
+        <div class="grid-menu">
             <div class="menu-card yellow" onclick="startQuizMode('personal')">
                 <div class="menu-icon">🖊️</div>
                 <div class="menu-title">128題測試</div>
-                
             </div>
-
-             <div class="menu-card blue" onclick="startQuizMode('part9')">
+            <div class="menu-card blue" onclick="startQuizMode('part9')">
                 <div class="menu-icon">🖊️</div>
                 <div class="menu-title">聽寫測試</div>
-                <div class="menu-sub"> </div>
             </div>
-
         </div>
         
-        <div class="contact-section" style="margin-top: 30px; padding-bottom: 30px;">
-            
-            <p class="contact-text">💡 覺得好用？歡迎關注與支持</p>
-            <button class="xiaohongshu-btn" onclick="goToXiaohongshu()" style="background-color: #ff2442; color: white; border: none; padding: 12px 20px; border-radius: 25px; font-weight: bold; cursor: pointer;">
-                前往作者小紅書 (獲取更新/反饋)
+        <div class="contact-section">
+            <p class="contact-text" style="color: #666; font-size: 14px; margin-bottom: 15px;">💡 覺得好用？歡迎關注與支持</p>
+            <button class="xiaohongshu-btn" onclick="goToXiaohongshu()">
+                前往作者小紅書
             </button>
-            <div style="margin-top: 10px; line-height: 1.8;">
-                <p style="margin: 0; color: #8E8E93; font-size: 13px; letter-spacing: 1px;">* 免責聲明 *</p>
-                <p style="margin: 0px 0 0 0; color: #8E8E93; font-size: 12px;">本工具僅供學習交流使用，非官方面試軟體，不對面試結果負責。</p>
+            <div style="margin-top: 20px; opacity: 0.7;">
+                <p style="margin: 0; font-size: 12px;">* 免責聲明 *</p>
+                <p style="margin: 5px 0; font-size: 11px;">本工具僅供學習交流使用，不對面試結果負責。</p>
+                <p style="font-size: 11px; margin-top: 10px;">N-400 助考工具 V1.0 | Made for Mom</p>
             </div>
-    <p class="version-text" style="margin-top: 10px; color: #C7C7CC; font-size: 12px;">N-400 助考工具 V1.0 | Made for Mom</p>
-</div>
+        </div>
     </div>
 
-<div id="glossary-menu-screen" class="hidden">
-    <p class="contact-text">點擊下方句子跟讀.</p>
-
-
-    <div id="reading-list-container" class="list-container" style="padding: 10px 16px;"></div>
-
-    <div style="padding: 20px;">
-        <button class="btn rect-btn" onclick="exitGlossaryMenu()">返回主頁</button>
+    <div id="glossary-menu-screen" class="hidden">
+        <p class="contact-text" style="font-weight: bold; padding: 15px;">點擊下方句子跟讀.</p>
+        <div id="reading-list-container" class="list-container"></div>
+        <div style="padding: 20px; width: 100%; display: flex; justify-content: center;">
+            <button class="btn rect-btn" onclick="exitGlossaryMenu()" style="background: #8E8E93; color: white; padding: 12px 30px; border-radius: 12px;">返回主頁</button>
+        </div>
     </div>
-</div>
-
-
 
     <div id="practice-screen" class="hidden">
         <div class="progress-indicator">
             <span id="q-current">1</span> / <span id="q-total">30</span>
         </div>
+        
         <div class="audio-wave-container" id="audio-anim">
-            <div class="wave-bar"></div>
-            <div class="wave-bar"></div>
-            <div class="wave-bar"></div>
-            <div class="wave-bar"></div>
-            <div class="wave-bar"></div>
+            <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
         </div>
+        
         <div class="officer-avatar">👮‍♂️</div>
+        
         <div class="question-box" id="q-box" onclick="toggleQuestionCard()">
-            <div id="q-hidden" class="click-hint">
+            <div id="q-hidden" class="click-hint" style="text-align: center;">
                 <div style="font-size: 40px;">👁️</div>
-                <span>點擊查看問題</span>
+                <span style="font-weight: bold; color: #8E8E93;">點擊查看問題</span>
             </div>
             <div id="q-text" class="question-content hidden"></div>
         </div>
 
         <div class="controls-area">
-            <button class="btn round-btn" onclick="replayAudio()">🔊</button>
-            <button class="btn main-action-btn colorful" id="main-btn" onclick="handleMainAction()">
-                開始<br>面試
-            </button>
-            <button class="btn round-btn" id="btn-star" onclick="toggleBookmark()">☆</button>
+            <button class="btn round-btn" onclick="replayAudio()" style="background: rgba(255,255,255,0.1); width: 60px; height: 60px; border-radius: 50%; font-size: 24px; color: white;">🔊</button>
+            <button class="btn main-action-btn colorful" id="main-btn" onclick="handleMainAction()">開始<br>面試</button>
+            <button class="btn round-btn" id="btn-star" onclick="toggleBookmark()" style="background: rgba(255,255,255,0.1); width: 60px; height: 60px; border-radius: 50%; font-size: 24px; color: white;">☆</button>
         </div>
 
         <div class="bottom-actions">
-            <button class="btn rect-btn" onclick="exitPractice()">🚪 退出</button>
-            <button class="btn rect-btn" onclick="restartSession()">🔄 重來</button>
+            <button class="btn rect-btn" onclick="exitPractice()" style="background: #555; color: white; padding: 10px 20px; border-radius: 10px;">🚪 退出</button>
+            <button class="btn rect-btn" onclick="restartSession()" style="background: #555; color: white; padding: 10px 20px; border-radius: 10px;">🔄 重來</button>
         </div>
     </div>
 
     <div id="bookmark-screen" class="hidden">
         <div class="nav-bar">
-            <div class="nav-back" onclick="exitBookmarks()">←</div>
+            <div class="nav-back" onclick="exitBookmarks()" style="font-size: 24px; margin-right: 15px; cursor: pointer;">←</div>
             <div class="nav-title">收藏夾</div>
         </div>
         <div class="tabs">
@@ -143,50 +121,41 @@
         <div class="list-container" id="bookmark-list"></div>
     </div>
 
-<div id="quiz-screen" class="hidden">
-    <div class="quiz-header">
-        <div class="header-top">
-            <span id="quiz-q-title">第 1 題</span>
-            <span id="quiz-accuracy">正確率: 100% (0/0)</span>
-        </div>
-        <div id="quiz-dots-container" class="dots-container"></div>
-    </div>
-
-    <div class="officer-avatar" onclick="replayQuizAudio()" style="cursor:pointer">👮‍♂️</div>
-    <div style="color: #8E8E93; font-size: 12px; margin-bottom: 10px;">(點擊考官可重聽)</div>
-
-    <div class="question-box" id="quiz-q-box" onclick="toggleQuizCard()">
-        <div id="quiz-q-hidden" class="click-hint">
-            <span>點擊查看答案</span>
-        </div>
-        <div id="quiz-q-text" class="question-content hidden"></div>
-    </div>
-
-    <div class="controls-area quiz-controls">
-        <div id="quiz-judge-group" class="judge-group">
-            <p style="width: 100%; text-align: center; color: #8E8E93; margin-top: -10px; margin-bottom: 8px;">你答對了嗎？</p>
-            <div style="display: flex; width: 100%; gap: 15px;">
-                <button class="btn btn-judge btn-correct" onclick="handleQuizJudge(true)">對</button>
-                <button class="btn btn-judge btn-wrong" onclick="handleQuizJudge(false)">錯</button>
+    <div id="quiz-screen" class="hidden">
+        <div class="quiz-header" style="width: 100%; max-width: 500px; padding: 10px;">
+            <div class="header-top" style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <span id="quiz-q-title" style="font-weight: bold;">第 1 題</span>
+                <span id="quiz-accuracy" style="font-size: 14px;">正確率: 100% (0/0)</span>
             </div>
+            <div id="quiz-dots-container" class="dots-container" style="display: flex; flex-wrap: wrap; gap: 5px; justify-content: center;"></div>
         </div>
-        <button class="btn quiz-main-btn" id="quiz-main-btn" onclick="handleQuizMainAction()">
-            開始測試
-        </button>
-    </div>
 
-    <div class="bottom-actions">
-            <button class="btn rect-btn" onclick="exitQuizMode()">🚪 退出</button>
-            <button class="btn rect-btn" onclick="restartQuizSession()">🔄 重來</button>
+        <div class="officer-avatar" onclick="replayQuizAudio()" style="cursor:pointer; margin-top: 10px;">👮‍♂️</div>
+        
+        <div class="question-box" id="quiz-q-box" onclick="toggleQuizCard()" style="margin-top: 15px;">
+            <div id="quiz-q-hidden" class="click-hint" style="text-align: center;">
+                <span style="color: #8E8E93; font-weight: bold;">點擊查看答案</span>
+            </div>
+            <div id="quiz-q-text" class="question-content hidden"></div>
         </div>
-</div>
+
+        <div class="controls-area quiz-controls" style="flex-direction: column; gap: 10px;">
+            <div id="quiz-judge-group" class="judge-group" style="display: none; width: 100%;">
+                <p style="text-align: center; color: #8E8E93; font-size: 14px;">你答對了嗎？</p>
+                <div style="display: flex; gap: 15px;">
+                    <button class="btn btn-judge btn-correct" onclick="handleQuizJudge(true)" style="flex: 1; background: #46d573; color: white; padding: 12px; border-radius: 100px; font-weight: bold;">對</button>
+                    <button class="btn btn-judge btn-wrong" onclick="handleQuizJudge(false)" style="flex: 1; background: #ec5449; color: white; padding: 12px; border-radius: 100px; font-weight: bold;">錯</button>
+                </div>
+            </div>
+            <button class="btn quiz-main-btn" id="quiz-main-btn" onclick="handleQuizMainAction()" style="width: 100%; max-width: 400px; background: #4A90E2; color: white; padding: 15px; border-radius: 30px; font-size: 18px; font-weight: bold;">開始測試</button>
+        </div>
+
+        <div class="bottom-actions" style="margin-top: 20px;">
+            <button class="btn rect-btn" onclick="exitQuizMode()" style="background: #eee; color: #333; padding: 10px 20px; border-radius: 10px;">🚪 退出</button>
+            <button class="btn rect-btn" onclick="restartQuizSession()" style="background: #eee; color: #333; padding: 10px 20px; border-radius: 10px;">🔄 重來</button>
+        </div>
+    </div>
     
     <script src="app.js"></script>
-    <script>
-        // 如果你的 app.js 裡還沒有定義 goToXiaohongshu
-        function goToXiaohongshu() {
-            window.open('https://www.xiaohongshu.com/user/profile/631f3bfd00000000230254b1', '_blank');
-        }
-    </script>
 </body>
 </html>
