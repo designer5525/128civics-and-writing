@@ -665,7 +665,7 @@ button#main-btn.main-action-btn.colorful {
 .header-top { display: flex; justify-content: space-between; font-weight: bold; margin-top: 10px; margin-bottom: 10px; }
 
 .dots-container {
-    display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+    display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-start;
 }
 
 .dot {
