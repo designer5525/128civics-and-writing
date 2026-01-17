@@ -653,7 +653,7 @@ button#main-btn.main-action-btn.colorful {
 .header-top { display: flex; justify-content: space-between; font-weight: bold; margin-top: 10px; margin-bottom: 10px; }
 
 .dots-container {
-    display: flex; flex-wrap: wrap; gap: 8px; min-height:30px; max-height: 100px;justify-content: center;overflow-y: auto; 
+    display: flex; flex-wrap: wrap; gap: 8px; min-height:30px;padding:10px; max-height: 100px;justify-content: center;overflow-y: auto; 
 }
 
 .dot {
