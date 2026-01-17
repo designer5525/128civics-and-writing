@@ -47,7 +47,7 @@ html {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
+    padding: 40px;
     padding-bottom: env(safe-area-inset-bottom); /* 適應 iPhone 底部橫條 */
 }
 
