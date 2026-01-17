@@ -21,12 +21,13 @@
 body {
     margin: 0;
     padding: 0;
-    /* 使用 dvh (Dynamic Viewport Height) 確保在 Chrome/Safari 網址列伸縮時高度正確 */
-    height: 100vh;
-    height: 100dvh; 
-    overflow: hidden;
-    position: fixed; /* 防止頁面被網址列推移 */
-    width: 100%;
+    /* 改為 min-height，讓頁面可以根據內容長高 */
+    min-height: 100dvh; 
+    height: auto; 
+    /* 允許垂直捲動 */
+    overflow-y: auto; 
+    display: block; /* 這裡改回 block 比較好處理長頁面 */
+    background-color: var(--bg-color);
 }
 
         /* --- Common Utils --- */
@@ -130,15 +131,16 @@ body {
         .glossary-item-btn span.icon { font-size: 24px; margin-right: 10px; }
         .glossary-item-btn:active { background: #E5E5EA; }
 
-        #quiz-screen, #practice-screen {
+       #quiz-screen, #practice-screen {
     display: flex;
     flex-direction: column;
-    height: 100%; /* 填滿 body */
-    width: 100%;
-    /* 硬性避開上方網址列與下方安全區 */
-    /* 頂部給 60px 確保題目序號不被遮擋，底部給 40px 避開橫條 */
-    padding: 60px 20px 40px 20px; 
+    align-items: center;
+    /* 確保至少跟螢幕一樣高 */
+    min-height: 100dvh; 
+    /* 頂部預留空間避開網址列，底部預留空間避開按鈕 */
+    padding: 60px 20px 180px 20px; 
     box-sizing: border-box;
+    width: 100%;
 }
 
         /* Progress Indicator */
