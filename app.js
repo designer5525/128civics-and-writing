@@ -196,6 +196,9 @@ function startQuizMode(mode) {
     if (glossaryMenuScreen) glossaryMenuScreen.classList.add('hidden'); 
     
     document.getElementById('quiz-screen').classList.remove('hidden');
+
+    window.scrollTo(0, 0);
+    document.body.scrollTop = 0;
     
     // 初始化按鈕樣式
     const mainBtn = document.getElementById('quiz-main-btn');
