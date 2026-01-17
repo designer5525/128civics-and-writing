@@ -1,108 +1,82 @@
-<style>
-    :root {
-        --primary-color: #5856D6;
-        --bg-color: #F2F2F7;
-        --text-main: #000000;
-        --text-sub: #8E8E93;
-        --white: #FFFFFF;
-    }
+/* --- 變數與基礎設定 --- */
+:root {
+    --primary-color: #5856D6;
+    --primary-light: #7A78EA;
+    --bg-color: #F2F2F7;
+    --dark-bg: #1C1C1E;
+    --card-bg: #FFFFFF;
+    --text-main: #000000;
+    --text-sub: #8E8E93;
+    --white: #FFFFFF;
+    --danger: #FF3B30;
+    --secondary: #8E8E93;
+}
 
-    /* 關鍵點 1：徹底解鎖全局捲動 */
-    html {
-        height: 100%;
-        overflow: hidden; /* 防止雙重捲動條 */
-    }
+* {
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
 
-    body {
-        margin: 0;
-        padding: 0;
-        height: 100%; /* 固定高度 */
-        overflow-y: auto; /* 在 body 層級捲動 */
-        -webkit-overflow-scrolling: touch; 
-        background-color: var(--bg-color);
-        display: block; /* 取消 flex，改用傳統佈局以支持自然捲動 */
-    }
+/* --- 核心修正：解決高度遮擋 --- */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-color);
+    /* 使用 dvh 確保在手機上自動避開地址欄 */
+    height: 100vh;
+    height: 100dvh; 
+    overflow: hidden; 
+    display: flex;
+    flex-direction: column;
+}
 
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+/* --- 頁面容器優化 --- */
+#home-screen, 
+#glossary-menu-screen, 
+#practice-screen, 
+#quiz-screen, 
+#bookmark-screen {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    width: 100%;
+    /* 允許垂直滾動，解決二級頁面卡死問題 */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    /* 考慮 iOS 底部安全區域 */
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+}
 
-    .hidden { display: none !important; }
+/* --- 共通組件 --- */
+.hidden { display: none !important; }
+.btn { border: none; cursor: pointer; outline: none; transition: transform 0.1s; display: flex; align-items: center; justify-content: center; }
+.btn:active { transform: scale(0.95); }
 
-    /* 關鍵點 2：屏幕容器優化 */
-    #home-screen, #quiz-screen, #practice-screen, #glossary-menu-screen {
-        width: 100%;
-        min-height: 100.1%; /* 稍微超過 100% 強制啟動彈性捲動 */
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 40px 20px 280px 20px; /* 底部預留極大空間給 Fixed 按鈕區 */
-        box-sizing: border-box;
-    }
+/* --- 頭部樣式 --- */
+.header { text-align: center; margin-bottom: 20px; flex-shrink: 0; }
+.header h1 { margin: 10px 0 5px; font-size: 28px; }
+.header h2 { margin: 0; font-size: 18px; color: var(--text-sub); font-weight: normal; }
 
-    /* 關鍵點 3：卡片內滾動與寬度限制 */
-    .question-box {
-        background: var(--white);
-        width: 100%;
-        max-width: 500px;
-        margin: 20px 0;
-        padding: 25px;
-        border-radius: 20px;
-        border: 1px solid #79abe1;
-        box-shadow: 0 10px 30px rgba(163, 187, 255, 0.3);
-        
-        /* 卡片內部捲動邏輯 */
-        flex-shrink: 0; /* 禁止被 flex 壓縮 */
-        max-height: 35vh; /* 限制高度，超過則內部捲動 */
-        overflow-y: auto; 
-        -webkit-overflow-scrolling: touch;
-    }
+/* --- 首頁選單 --- */
+.grid-menu {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    width: 100%;
+    max-width: 500px;
+}
 
-    /* 關鍵點 4：固定控制區防干擾 */
-    .controls-area {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        z-index: 1000;
-        /* 使用漸變背景，確保按鈕下方內容被遮蓋但上方有過渡 */
-        background: linear-gradient(to top, var(--bg-color) 85%, rgba(242,242,247,0));
-        padding: 10px 20px 40px 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        /* 避免這個固定區域擋住背景滑動，設定 pointer-events: none */
-        pointer-events: none; 
-    }
+.menu-card {
+    background: var(--white);
+    padding: 20px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    cursor: pointer;
+}
 
-    /* 確保按鈕本身可以點擊 */
-    .controls-area .btn, .controls-area .quiz-main-btn, .controls-area .judge-group {
-        pointer-events: auto;
-    }
-
-    /* 關鍵點 5：底部動作區（退出/重來） */
-    /* 這些按鈕應該跟隨頁面捲動，不要固定，否則會重疊 */
-    .bottom-actions {
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
-        max-width: 500px;
-        margin-top: 20px;
-        padding-bottom: 20px;
-    }
-
-    /* 其他 UI 樣式維持原樣 */
-    .officer-avatar {
-        width: 80px; height: 80px; font-size: 45px;
-        border-radius: 50%; border: 3px solid var(--primary-color);
-        display: flex; align-items: center; justify-content: center;
-        background: #d8d8ff; margin: 10px 0; flex-shrink: 0;
-    }
-    
-    .dot { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid #BCBCBC; }
-    .dot.current { border: 2px solid #000; }
-    
-    .quiz-main-btn {
-        width: 100%; max-width: 500px; height: 55px; border-radius: 100px;
-        background: #4A90E2 !important; color: white !important;
-        font-size: 20px; font-weight: bold;
-    }
-</style>
+.menu-icon { font-size: 32px; margin-bottom: 10px; }
+.menu-title { font-weight: bold; font-size: 16px; line-
