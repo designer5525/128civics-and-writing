@@ -160,36 +160,6 @@
             z-index: 10;
         }
 
-        /* Audio Wave Animation */
-        .audio-wave-container {
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            margin-top: 40px; 
-            margin-bottom: 10px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        .audio-wave-container.playing { opacity: 1; }
-        .wave-bar {
-            width: 6px;
-            height: 100%;
-            background: var(--primary-color);
-            border-radius: 3px;
-            animation: wave 1s infinite ease-in-out;
-        }
-        .wave-bar:nth-child(1) { animation-delay: 0.0s; height: 40%; }
-        .wave-bar:nth-child(2) { animation-delay: 0.1s; height: 70%; }
-        .wave-bar:nth-child(3) { animation-delay: 0.2s; height: 100%; }
-        .wave-bar:nth-child(4) { animation-delay: 0.3s; height: 70%; }
-        .wave-bar:nth-child(5) { animation-delay: 0.4s; height: 40%; }
-        @keyframes wave {
-            0%, 100% { transform: scaleY(0.5); opacity: 0.5; }
-            50% { transform: scaleY(1); opacity: 1; box-shadow: 0 0 10px var(--primary-color); }
-        }
-
         .officer-avatar {
             width: 80px;
             height: 80px;
