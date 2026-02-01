@@ -73,9 +73,24 @@
         <div class="contact-section" style="margin-top: 30px; padding-bottom: 30px;">
             
             <p class="contact-text">💡 覺得好用？歡迎關注與支持</p>
-            <button class="xiaohongshu-btn" onclick="goToXiaohongshu()" style="background-color: #ff2442; color: white; border: none; padding: 12px 20px; border-radius: 25px; font-weight: bold; cursor: pointer;">
-                前往作者小紅書 (獲取更新/反饋)
-            </button>
+            <div class="grid-menu">
+       <div class="Official-btn" onclick="showOfficialScreen()">
+            <span class="toolbar-icon">🏛️</span>
+            <div class="toolbar-text">
+                <span class="main-txt">Official</span>
+                <span class="main-txt">查看官網</span>
+            </div>
+        </div>
+       
+
+         <div class="xiaohongshu-btn" onclick="goToXiaohongshu()" >
+            <span class="toolbar-icon">💬</span>
+            <div class="toolbar-text">
+                <span class="main-txt">Advise</span>
+                <span class="main-txt">反饋/建議</span>
+            </div>
+         </div>
+    </div>
             <div style="margin-top: 10px; line-height: 1.8;">
                 <p style="margin: 0; color: #8E8E93; font-size: 13px; letter-spacing: 1px;">* 免責聲明 *</p>
                 <p style="margin: 0px 0 0 0; color: #8E8E93; font-size: 12px;">本工具僅供學習交流使用，非官方面試軟體，不對面試結果負責。</p>
@@ -94,8 +109,6 @@
         <button class="btn rect-btn" onclick="exitGlossaryMenu()">返回主頁</button>
     </div>
 </div>
-
-
 
     <div id="practice-screen" class="hidden">
         <div class="progress-indicator">
@@ -181,7 +194,49 @@
             <button class="btn rect-btn" onclick="restartQuizSession()">🔄 重來</button>
         </div>
 </div>
+
+<div id="official-screen" class="hidden">
+    <div class="header">
+            <h1>官網</h1>
+            <h2>Offical Websites</h2>
+        </div>
     
+    <div class="hang-menu"> 
+        
+         <a href="https://www.uscis.gov/citizenship/find-study-materials-and-resources/study-for-the-test" 
+             target="_blank" class="webpage-btn" >
+            <div class="toolbar-text">
+                <p class="main-txt"> Civic Resource Center<br> “Study for the Test” 頁面</p>
+                <p class="sub-txt" style="margin-top: -10px;"> *此頁包含歷來所有官方複習資料，拉到網頁下方即可看到列表*</p>
+            </div>
+        </a>
+
+         <p class="contact-text" style="text-align: center; margin-bottom: 0px;"> ---------- 快捷跳轉 ----------</p>
+        <a href="https://www.uscis.gov/sites/default/files/document/questions-and-answers/2025-Civics-Test-128-Questions-and-Answers.pdf" 
+             target="_blank" class="webpage-btn">
+            <div class="toolbar-text">
+                <span class="main-txt"> “128Civics 歷史題"</span>
+            </div>
+         </a>
+         
+         <a href="https://www.uscis.gov/sites/default/files/document/guides/reading_vocab.pdf" 
+             target="_blank" class="webpage-btn">
+            <div class="toolbar-text">
+                <span class="main-txt"> “Reading 閱讀詞彙表"</span>
+            </div>
+         </a>
+           <a href="https://www.uscis.gov/sites/default/files/document/guides/writing_vocab.pdf" 
+             target="_blank" class="webpage-btn">
+            <div class="toolbar-text">
+                <span class="main-txt"> “Writing 聽寫詞彙表"</span>
+            </div>
+         </a>
+
+        </div>
+     
+        <button class="btn rect-btn" style="margin-top: 40px;" onclick="exitOfficialScreen()">🚪 退出</button>
+
+
     <script src="app.js"></script>
     <script>
         // 如果你的 app.js 裡還沒有定義 goToXiaohongshu

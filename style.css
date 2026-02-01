@@ -35,7 +35,7 @@
         .btn:active { transform: scale(0.95); }
 
         /* --- Home Screen --- */
-        #home-screen, #glossary-menu-screen, #practice-screen, #quiz-screen {
+        #home-screen, #glossary-menu-screen, #practice-screen, #quiz-screen, #official-screen {
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -68,6 +68,14 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+         .hang-menu {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
             width: 100%;
             max-width: 500px;
         }
@@ -549,6 +557,19 @@ button#main-btn.main-action-btn.colorful {
     margin-bottom: 10px;
 }
 
+.main-txt {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.sub-txt {
+    font-size: 14px;
+    color: #959595;
+    margin-top: 4px;
+    text-align: center;
+}
+
 /* 免責聲明卡片樣式 */
 .disclaimer-box {
     background-color: #E5E5EA; /* 比背景稍深的灰色 */
@@ -567,6 +588,30 @@ button#main-btn.main-action-btn.colorful {
     margin-bottom: 6px;
     font-size: 14px;
 } 
+
+.toolbar-icon {
+    font-size: 20px; margin-right: 5px;
+}
+
+
+.webpage-btn {
+    background: linear-gradient(135deg, #f1f8ff 0%, #ffffff 100%); 
+    color: rgb(46, 94, 189);
+    border: 2px solid #5985ff;
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 6px 15px rgba(36, 127, 255, 0.3);
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none; /* 防止 <a> 標籤默認下劃線 */
+}
+
+
 /* 小紅書按鈕升級：加入漸變與陰影 */
 .xiaohongshu-btn {
     background: linear-gradient(135deg, #ff2442 0%, #ff5263 100%); 
@@ -593,6 +638,34 @@ button#main-btn.main-action-btn.colorful {
 .xiaohongshu-btn:active {
     transform: scale(0.96);
     box-shadow: 0 2px 8px rgba(255, 36, 66, 0.2);
+}
+
+/* 官網按鈕 */
+.Official-btn {
+    background: linear-gradient(135deg, #2491ff 0%, #43a1ff 100%); 
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 6px 15px rgba(36, 127, 255, 0.3);
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none; /* 防止 <a> 標籤默認下劃線 */
+}
+
+.Official-btn:hover {
+    box-shadow: 0 8px 20px rgba(36, 127, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.Official-btn:active {
+    transform: scale(0.96);
+    box-shadow: 0 2px 8px rgba(36, 127, 255, 0.2);
 }
 
 /* 版本號微調 */

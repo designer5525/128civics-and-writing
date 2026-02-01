@@ -30,6 +30,7 @@ const qCounter = document.getElementById('q-current');
 const qTotal = document.getElementById('q-total');
 const starBtn = document.getElementById('btn-star');
 const mainBtn = document.getElementById('main-btn');
+const OfficialScreen = document.getElementById('official-screen');
 // --- FUNCTIONS ---
 
 // --- 新增：從 CSV 載入資料並關聯 ---
@@ -842,6 +843,19 @@ function toggleBookmark() {
 function saveBookmarks() {
     localStorage.setItem('n400_bookmarks_v2', JSON.stringify(bookmarks));
 }
+
+// 官網頁面
+
+function showOfficialScreen() {
+    homeScreen.classList.add('hidden');
+    OfficialScreen.classList.remove('hidden');
+}
+function exitOfficialScreen() {
+    OfficialScreen.classList.add('hidden');
+    homeScreen.classList.remove('hidden');
+}
+
+
 
 // 書籤頁面
 function showBookmarks() {
