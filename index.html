@@ -110,9 +110,12 @@
     </div>
 </div>
 
-    <div id="practice-screen" class="hidden">
+<div id="practice-screen" class="hidden">
         <div class="progress-indicator">
-            <span id="q-current">1</span> / <span id="q-total">30</span>
+           <span>#</span> <span id="q-current">1</span> / <span id="q-total">30</span>
+        </div>
+        <div id="quick-index-nav" style="text-align: center; margin: 10px 0; color: #8E8E93; font-size: 13px; cursor: pointer;" onclick="jumpToAnyQuestion()">
+            點擊可自主選題
         </div>
         <div class="audio-wave-container" id="audio-anim">
             <div class="wave-bar"></div>
@@ -130,11 +133,17 @@
             <div id="q-text" class="question-content hidden"></div>
         </div>
 
-        <div class="controls-area">
+       <div class="controls-area">
             <button class="btn round-btn" onclick="replayAudio()">🔊</button>
+            
+            <button class="btn round-btn" onclick="prevQuestion()">◀️</button>
+            
             <button class="btn main-action-btn colorful" id="main-btn" onclick="handleMainAction()">
                 開始<br>面試
             </button>
+
+            <button class="btn round-btn" onclick="nextQuestion()">▶️</button>
+            
             <button class="btn round-btn" id="btn-star" onclick="toggleBookmark()">☆</button>
         </div>
 

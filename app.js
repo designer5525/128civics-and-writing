@@ -10,7 +10,7 @@ let questionQueue = [];
 let currentIndex = 0;
 let isRevealed = false;
 let isSessionStarted = false;
-let bookmarks = JSON.parse(localStorage.getItem('n400_bookmarks_v2')) || { personal: [], part9: [], glossary: [] };
+let bookmarks = JSON.parse(localStorage.getItem('n400_bookmarks_v4')) || { personal: [], part9: [], glossary: [] };
 let currentTab = 'personal';
 let synth = window.speechSynthesis;
 let currentVoice = null;
@@ -31,7 +31,28 @@ const qTotal = document.getElementById('q-total');
 const starBtn = document.getElementById('btn-star');
 const mainBtn = document.getElementById('main-btn');
 const OfficialScreen = document.getElementById('official-screen');
+
 // --- FUNCTIONS ---
+
+// ✅ FIXED: Get best English voice - moved to top level
+function getBestVoice() {
+    const voices = synth.getVoices();
+    
+    // Filter out non-English voices first (crucial for Chrome on iPad with Chinese system)
+    const englishVoices = voices.filter(v => 
+        v.lang && v.lang.startsWith('en')
+    );
+    
+    // If we have English voices, use them. Otherwise fallback to all voices.
+    const voicePool = englishVoices.length > 0 ? englishVoices : voices;
+    
+    // Priority: 1. Samantha (iOS) | 2. Google US | 3. Any enhanced en-US | 4. Any en-US
+    return voicePool.find(v => v.name.includes('Samantha')) || 
+           voicePool.find(v => v.name.includes('Google US English')) ||
+           voicePool.find(v => v.lang === 'en-US' && v.name.includes('Enhanced')) ||
+           voicePool.find(v => v.lang && v.lang.startsWith('en-US')) ||
+           voicePool[0];
+}
 
 // --- 新增：從 CSV 載入資料並關聯 ---
 // --- 修改後的資料載入函數 ---
@@ -90,9 +111,15 @@ async function Data() {
     }
 }
 
-// 確保執行時名稱一致
+// ✅ FIXED: Added delay for iOS voice loading
 window.addEventListener('DOMContentLoaded', async () => {
-    await Data(); 
+    await Data();
+    
+    // Give iOS/iPad time to load voices
+    setTimeout(() => {
+        window.speechSynthesis.getVoices();
+    }, 100);
+    
     window.speechSynthesis.onvoiceschanged = () => {
         window.speechSynthesis.getVoices();
     };
@@ -260,34 +287,17 @@ function handleQuizMainAction() {
         loadQuizQuestion();
     }
 }
-// 4. 判斷對錯
-function handleQuizJudge(isCorrect) {
-    quizResults[currentIndex] = isCorrect; // 紀錄結果
-    updateAccuracy();
-    renderDots(); // 更新圓點顏色
-    handleQuizMainAction(); // 自動跳下一題
-}
 
-// 5. 更新正確率文字
-function updateAccuracy() {
-    const answered = quizResults.filter(r => r !== null).length;
-    const correct = quizResults.filter(r => r === true).length;
-    const rate = answered === 0 ? 100 : Math.round((correct / answered) * 100);
-    document.getElementById('quiz-accuracy').innerText = `正確率: ${rate}% (${correct}/${answered})`;
-}
-
-// 6. 跳轉題目
-function jumpToQuestion(idx) {
-    // 如果還沒按「開始測試」，不允許通過圓點跳轉（或者點擊後自動視為開始）
-    if (!isSessionStarted) {
-        handleQuizMainAction(); 
-    }
-    currentIndex = idx;
-    loadQuizQuestion();
-}
-
+// 4. 載入題目
 function loadQuizQuestion() {
-    isRevealed = false;
+    if (currentIndex >= questionQueue.length) {
+        alert("測試完成！");
+        exitQuizMode();
+        return;
+    }
+
+    isRevealed = false; // ✅ 重置翻卡狀態
+    
     // 更新標題和計數
     document.getElementById('quiz-q-title').innerText = `第 ${currentIndex + 1} 題`;
     
@@ -302,6 +312,7 @@ function loadQuizQuestion() {
     playCurrentQuizAudio(); // 自動播放語音
 }
 
+// 5. 翻卡片顯示內容
 function toggleQuizCard() {
     if (!isSessionStarted || isRevealed) return;
     isRevealed = true;
@@ -357,7 +368,7 @@ function toggleQuizCard() {
                         </div>
                         ${item.def ? `
                             <button class="btn" style="background: #F2F2F7; border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center;" 
-                                    onclick="event.stopPropagation(); speakText('${item.def.replace(/'/g, "\\'")}')">
+                                    onclick="event.stopPropagation(); speakText('${item.def.replace(/'/g, "\\'")}', false)">
                                 <span style="font-size: 14px;">🔊</span>
                             </button>
                         ` : ''}
@@ -371,6 +382,44 @@ function toggleQuizCard() {
     document.getElementById('quiz-judge-group').classList.add('show');
 }
 
+// 6. 判斷對錯（統一處理函數）
+function handleQuizJudge(isCorrect) {
+    quizResults[currentIndex] = isCorrect; // 紀錄結果
+    updateAccuracy();
+    renderDots(); // 更新圓點顏色
+    handleQuizMainAction(); // 自動跳下一題
+}
+
+// 6a. 記錄正確（調用統一處理函數）
+function markCorrect() {
+    handleQuizJudge(true);
+}
+
+// 6b. 記錄錯誤（調用統一處理函數）
+function markWrong() {
+    handleQuizJudge(false);
+}
+
+// 7. 更新正確率
+function updateAccuracy() {
+    const answered = quizResults.filter(r => r !== null).length;
+    const correct = quizResults.filter(r => r === true).length;
+    const total = questionQueue.length; // 使用總題數（128題或37題）
+    const rate = total === 0 ? 0 : Math.round((correct / total) * 100);
+    document.getElementById('quiz-accuracy').innerText = `正確率: ${rate}% (${correct}/${total})`;
+}
+
+// 8. 點擊圓點跳轉
+function jumpToQuestion(idx) {
+    // 如果還沒按「開始測試」，不允許通過圓點跳轉（或者點擊後自動視為開始）
+    if (!isSessionStarted) {
+        handleQuizMainAction(); 
+    }
+    currentIndex = idx;
+    loadQuizQuestion();
+}
+
+// 9. 退出測試
 function exitQuizMode() {
     document.getElementById('quiz-screen').classList.add('hidden');
     homeScreen.classList.remove('hidden');
@@ -378,7 +427,7 @@ function exitQuizMode() {
     clearAudio();
 }
 
-// 播放測試分頁當前的題目語音
+// 10. 播放測試分頁當前的題目語音
 function playCurrentQuizAudio() {
     const item = questionQueue[currentIndex];
     if (item) {
@@ -386,13 +435,13 @@ function playCurrentQuizAudio() {
     }
 }
 
-// 點擊測試分頁考官頭像重聽
+// 11. 點擊測試分頁考官頭像重聽
 function replayQuizAudio() {
     clearAudio();
     playCurrentQuizAudio();
 }
 
-//重來當前測試
+// 12. 重來當前測試
 function restartQuizSession() {
     // 1. 彈出確認視窗（選配，防止誤觸）
     if (!confirm("確定要重新開始測試嗎？所有進度將清空。")) return;
@@ -424,46 +473,12 @@ function restartQuizSession() {
     // 7. 更新題目編號顯示
     document.getElementById('quiz-q-title').innerText = `第 1 題`;
 }
-//退出測試//
-function exitQuizMode() {
-    clearAudio();
-    document.getElementById('quiz-screen').classList.add('hidden');
-    
-    // 無論從哪裡進入，退出後一律回主頁是最安全的
-    homeScreen.classList.remove('hidden');
-    
-    isSessionStarted = false;
-}
 
+//練習模塊//
 
-//閱讀模塊語音
-function speakGlossaryPhrase(word) {
-    // 閱讀模塊現在直接讀句子即可
-    speakText(word, false);
-}
-
-//閱讀模塊收藏邏輯
-function toggleReadingBookmark(wordText) {
-    const list = bookmarks.glossary;
-    // 尋找是否已存在
-    const idx = list.findIndex(b => (typeof b === 'object' ? b.word : b) === wordText);
-
-    if (idx > -1) {
-        // 已存在則移除
-        list.splice(idx, 1);
-    } else {
-        // 不存在則從 glossaryData 找回完整物件存入
-        const item = glossaryData.find(g => g.word === wordText);
-        if (item) list.push(item);
-    }
-
-    saveBookmarks();
-    renderReadingList(); // 立即刷新列表顯示星星狀態
-}
-
-// 啟動練習
+// 開始練習
 function startSession(mode, catId = 0) {
-  if (personalQuestions.length === 0) {
+    if (personalQuestions.length === 0) {
         console.log("數據尚未就緒，嘗試重新載入...");
         return; 
     }
@@ -473,15 +488,14 @@ function startSession(mode, catId = 0) {
 
     if (mode === 'personal') {
         pool = [...personalQuestions];
-        questionQueue = shuffleArray(pool);
+        questionQueue = pool;
     } else if (mode === 'part9') {
         pool = [...part9Questions];
-        questionQueue = shuffleArray(pool);
+        questionQueue = pool;
     } else if (mode === 'glossary') {
         pool = glossaryData.filter(item => item.cat === catId);
         if (pool.length === 0 && glossaryData.length > 0) {
             console.warn(`分類 ID ${catId} 中沒有資料，請檢查 CSV`);
-            // 備選方案：如果分類找不到，顯示全部名詞
             pool = [...glossaryData]; 
         }
         questionQueue = shuffleArray(pool);
@@ -491,8 +505,10 @@ function startSession(mode, catId = 0) {
         alert("目前清單是空的喔！");
         return;
     }
+    // 強制重置索引為 0，確保每次都從第一題開始
     currentIndex = 0;
-    isSessionStarted = false;
+    
+    isSessionStarted = false; // 初始還是要點擊「開始」才能聽聲音
 
     homeScreen.classList.add('hidden');
     glossaryMenuScreen.classList.add('hidden');
@@ -502,7 +518,7 @@ function startSession(mode, catId = 0) {
     loadQuestion(false);
 }
 
-// 重新開始
+// 重新開始練習
 function restartSession() {
     clearAudio();
     if (currentMode === 'glossary') {
@@ -512,16 +528,14 @@ function restartSession() {
     }
 }
 
-// 退出練習
+// 離開練習
 function exitPractice() {
     clearAudio();
-  // 1. 重置狀態變數，讓下次進入時能判定為「尚未開始」
     isSessionStarted = false;
-  // 2. 恢復按鈕的藍色樣式類名
     const mainBtn = document.getElementById('main-btn');
     if (mainBtn) mainBtn.classList.add('colorful');
     
-  practiceScreen.classList.add('hidden');
+    practiceScreen.classList.add('hidden');
     if (currentMode === 'glossary') {
         glossaryMenuScreen.classList.remove('hidden');
     } else {
@@ -529,7 +543,7 @@ function exitPractice() {
     }
 }
 
-// 清除語音動畫與時間軸
+// 清除語音和超時
 function clearAudio() {
     synth.cancel();
     if (audioTimeout) clearTimeout(audioTimeout);
@@ -540,17 +554,26 @@ function clearAudio() {
 
 // 更新主按鈕文字
 function updateMainButtonText() {
-    mainBtn.innerHTML = isSessionStarted ? "我回答<br>完了" : "開始<br>面試";
+    mainBtn.innerHTML = isSessionStarted ? "面試中" : "開始<br>面試";
+    if (isSessionStarted) {
+        mainBtn.innerHTML = "面試中";
+        mainBtn.disabled = true;  // 禁用按鈕，不可點擊
+        mainBtn.style.opacity = "0.6"; // 可選：降低透明度，讓視覺上更像禁用的樣子
+        mainBtn.style.cursor = "not-allowed"; // 可選：改變鼠標樣式
+    } else {
+        mainBtn.innerHTML = "開始<br>面試";
+        mainBtn.disabled = false; // 啟用按鈕
+        mainBtn.style.opacity = "1.0";
+        mainBtn.style.cursor = "pointer";
+    }
 }
 
-// 主按鈕行為
+// 主按鈕動作
 function handleMainAction() {
     clearAudio();
     if (!isSessionStarted) {
         isSessionStarted = true;
-        // --- 點擊後移除藍色類名 ---
         mainBtn.classList.remove('colorful');
-      
         updateMainButtonText();
         audioTimeout = setTimeout(() => playCurrentAudio(), 500);
     } else {
@@ -558,7 +581,7 @@ function handleMainAction() {
     }
 }
 
-// 取得當前題目
+// 取得當前項目
 function getCurrentItem() {
     return questionQueue[currentIndex];
 }
@@ -568,7 +591,7 @@ function getQString(item) {
     return typeof item === 'string' ? item : item.word;
 }
 
-// 載入題目
+// 載入問題
 function loadQuestion(autoPlay) {
     if (currentIndex >= questionQueue.length) {
         alert("練習完成！即將返回主頁。");
@@ -579,17 +602,52 @@ function loadQuestion(autoPlay) {
     isRevealed = false;
     qHidden.classList.remove('hidden');
     qText.classList.add('hidden');
-    qText.innerHTML = "";
-
+    
     qCounter.innerText = currentIndex + 1;
     qTotal.innerText = questionQueue.length;
 
-    updateBookmarkButtonState();
+    // --- 修改處：控制上一題/下一題按鈕的顯示/隱藏 ---
+    const prevBtn = document.getElementById('btn-prev');
+    const nextBtn = document.getElementById('btn-next');
+    
+    // 第一題不顯示「上一題」
+    if (prevBtn) prevBtn.style.visibility = (currentIndex === 0) ? 'hidden' : 'visible';
+    // 最後一題可以隱藏「下一題」或變成「完成」
+    if (nextBtn) nextBtn.style.visibility = (currentIndex === questionQueue.length - 1) ? 'hidden' : 'visible';
 
+    // 保存進度到本地
+    localStorage.setItem(`progress_${currentMode}_${glossaryCategory}`, currentIndex);
+
+    updateBookmarkButtonState();
     if (autoPlay) audioTimeout = setTimeout(() => playCurrentAudio(), 500);
 }
 
-// 顯示 / 隱藏題目卡
+// 上一題邏輯
+function prevQuestion() {
+    if (currentIndex > 0) {
+        clearAudio();
+        currentIndex--;
+        loadQuestion(true);
+    }
+}
+
+// 跳轉題目邏輯 (簡單易用的方式)
+function jumpToAnyQuestion() {
+    const target = prompt(`請輸入題號 (1 - ${questionQueue.length}):`, currentIndex + 1);
+    const num = parseInt(target);
+    if (num >= 1 && num <= questionQueue.length) {
+        clearAudio();
+        currentIndex = num - 1;
+        loadQuestion(true);
+    } else if (target !== null) {
+        alert("無效的題號");
+    }
+    
+}
+
+
+
+// 切換問題卡片顯示
 function toggleQuestionCard() {
     if (isRevealed) {
         isRevealed = false;
@@ -600,7 +658,7 @@ function toggleQuestionCard() {
         qHidden.classList.add('hidden');
         qText.classList.remove('hidden');
 
-        const item = getCurrentItem();  
+        const item = getCurrentItem();
 
         if (currentMode === 'glossary') {
             qText.innerHTML = `
@@ -611,10 +669,10 @@ function toggleQuestionCard() {
                     <div class="gloss-divider"></div>
                     <div class="gloss-def-container">
                         <div class="gloss-def">${item.def}</div>
-                        <button class="btn audio-sm-btn" onclick="event.stopPropagation(); speakText('${item.def.replace(/'/g, "\\'")}')">🔊</button>
+                        <button class="btn audio-sm-btn" onclick="event.stopPropagation(); speakText('${item.def.replace(/'/g, "\\'")}', false)">🔊</button>
                     </div>
                 </div>`;
-       } else if (currentMode === 'personal') {
+        } else if (currentMode === 'personal') {
     const item = getCurrentItem(); 
     qText.innerHTML = `
         <div style="text-align: left; padding: 10px; width: 100%;">
@@ -673,11 +731,9 @@ function nextQuestion() {
     loadQuestion(true);
 }
 
-// 播放當前題目語音
+// 播放當前語音
 function playCurrentAudio() {
     const item = getCurrentItem();
-    if (!item) return;
-
     if (currentMode === 'glossary') {
         speakGlossaryPhrase(item.word);
     } else if (currentMode === 'personal') {
@@ -703,74 +759,40 @@ function setAnimation(isActive) {
     audioAnim.classList.toggle('playing', isActive);
 }
 
-// 語音朗讀
-
+// ✅ FIXED: Text-to-speech with proper voice assignment
 function speakText(text, showAnim = false) {
-    // 先清理掉之前正在讀的內容
     synth.cancel();
 
-    // 1. 只提取英文部分進行朗讀（避免語音引擎嘗試讀中文）
+    // Extract English part only
     const englishText = text.split(/[\u4e00-\u9fa5]/)[0].trim();
-
-    // 2. 依照 "|" 符號拆分英文段落
     const segments = englishText.split('|');
     let currentSegment = 0;
 
-    // 定義一個內部的播放函數來實現循環停頓
     function playNext() {
         if (currentSegment < segments.length) {
             const utterance = new SpeechSynthesisUtterance(segments[currentSegment].trim());
+            
+            // ✅ KEY FIX: Get and assign voice BEFORE setting other properties
+            const selectedVoice = getBestVoice();
+            utterance.voice = selectedVoice;
             utterance.lang = 'en-US';
-            utterance.rate = 0.9;
+            
+            // ✅ CHROME iPAD FIX: Adjust rate based on voice to prevent slowdown
+            // Chrome on iPad with Chinese system sometimes needs higher rate
+            const isChromeLike = navigator.userAgent.includes('Chrome') && !navigator.userAgent.includes('Safari');
+            const needsRateBoost = isChromeLike && selectedVoice && !selectedVoice.lang.startsWith('en');
+            utterance.rate = needsRateBoost ? 1.3 : 0.9;
 
-            // 定義一個函數來選取最好的聲音
-function getBestVoice() {
-    let voices = synth.getVoices();
-    
-    // 優先順序：1. iPhone 的 Samantha | 2. Google 的高品質音 | 3. 任何 en-US 的聲音
-    return voices.find(v => v.name.includes('Samantha')) || 
-           voices.find(v => v.name.includes('Google US English')) ||
-           voices.find(v => v.lang === 'en-US' && v.name.includes('Enhanced')) ||
-           voices.find(v => v.lang.startsWith('en-US')) ||
-           voices[0];
-}
-
-// 播放函數
-function speak(text) {
-    if (synth.speaking) { synth.cancel(); } // 如果正在說話，先停止
-
-    const utterance = new SpeechSynthesisUtterance(text);
-    
-    // 關鍵：每次播放前重新獲取一次最好的聲音，確保手機已加載完成
-    utterance.voice = getBestVoice();
-    
-    // 參數調整
-    utterance.rate = 0.85;  // 稍慢，適合練習
-    utterance.pitch = 1.0;  // 音調正常
-    
-    synth.speak(utterance);
-}
-
-// 解決 Chrome/Safari 的異步加載問題
-if (speechSynthesis.onvoiceschanged !== undefined) {
-    speechSynthesis.onvoiceschanged = getBestVoice;
-}
-
-            // 動態效果控制
             if (showAnim) {
                 utterance.onstart = () => setAnimation(true);
-                // 注意：這裡不直接設為 false，改在 onend 判斷
             }
 
-            // 當這一段讀完後的處理
             utterance.onend = () => {
                 currentSegment++;
                 if (currentSegment < segments.length) {
-                    // 關鍵：如果還沒讀完，關閉動畫並等待 2 秒再讀下一段
-                    if (showAnim) setAnimation(false); 
-                    setTimeout(playNext, 2000); 
+                    if (showAnim) setAnimation(false);
+                    setTimeout(playNext, 2000);
                 } else {
-                    // 全部讀完後，確保動畫關閉
                     if (showAnim) setAnimation(false);
                 }
             };
@@ -783,32 +805,36 @@ if (speechSynthesis.onvoiceschanged !== undefined) {
         }
     }
 
-    // 開始執行第一段播放
     playNext();
 }
 
-/*
-// Glossary 專用朗讀
+// ✅ FIXED: Glossary phrase speech with proper voice assignment
 function speakGlossaryPhrase(word) {
     clearAudio();
     setAnimation(true);
 
-    const rate = 0.85;
-    const u1 = new SpeechSynthesisUtterance("What does");
-    u1.lang = 'en-US'; u1.rate = rate;
-    const u2 = new SpeechSynthesisUtterance(word);
-    u2.lang = 'en-US'; u2.rate = 0.75;
-    const u3 = new SpeechSynthesisUtterance("mean?");
-    u3.lang = 'en-US'; u3.rate = rate;
+    const bestVoice = getBestVoice(); // Get voice once
+    
+    // ✅ CHROME iPAD FIX: Detect if we need rate boost
+    const isChromeLike = navigator.userAgent.includes('Chrome') && !navigator.userAgent.includes('Safari');
+    const needsRateBoost = isChromeLike && bestVoice && !bestVoice.lang.startsWith('en');
+   
+    // 設定單字的語速
+    const wordRate = needsRateBoost ? 1.0 : 0.75;
+    
+ // 建立單一語音對象
+    const utterance = new SpeechSynthesisUtterance(word);
+    utterance.voice = bestVoice;
+    utterance.lang = 'en-US';
+    utterance.rate = wordRate;
 
-    u1.onend = () => audioSequenceTimeouts.push(setTimeout(() => synth.speak(u2), 200));
-    u2.onend = () => audioSequenceTimeouts.push(setTimeout(() => synth.speak(u3), 200));
-    u3.onend = () => setAnimation(false);
-    u1.onerror = u2.onerror = u3.onerror = () => setAnimation(false);
+    // 播放結束時關閉動畫
+    utterance.onend = () => setAnimation(false);
+    utterance.onerror = () => setAnimation(false);
 
-    synth.speak(u1);
+    // 開始播放
+    synth.speak(utterance);
 }
-*/
 
 // --- BOOKMARKS ---
 function updateBookmarkButtonState() {
@@ -841,7 +867,7 @@ function toggleBookmark() {
 }
 
 function saveBookmarks() {
-    localStorage.setItem('n400_bookmarks_v2', JSON.stringify(bookmarks));
+    localStorage.setItem('n400_bookmarks_v4', JSON.stringify(bookmarks));
 }
 
 // 官網頁面
@@ -907,9 +933,34 @@ function renderBookmarkList() {
             audioAction = `speakGlossaryPhrase('${textValue.replace(/'/g, "\\'")}')`;
             if (found) displayText = `<b>${found.word}</b><br><span style="font-size:14px;color:#666">${found.chinese}</span>`;
         } 
+        // ✅ 新增：處理 128題 (personal) 的精美雙語樣式
+        else if (currentTab === 'personal') {
+            const found = personalQuestions.find(q => q.word === val);
+            if (found) {
+                displayText = `
+                    <div style="text-align: left; line-height: 1.4;">
+                        <span style="font-size: 18px; font-weight: 800; color: #000;">#${found.cat || "--"}</span><div style="color: #000; font-weight: bold;">${found.word}</div>
+                        <div style="color: #333; font-size: 13px; margin-bottom: 8px;">${found.chinese}</div>
+                        
+                        <div style="border-top: 1px dashed #EEE; margin: 4px 0;"></div>
+                        
+                        <div style="color: #007AFF; font-weight: bold; font-size: 14px;">${found.def}</div>
+                        <div style="color: #007AFF; font-size: 13px; opacity: 0.8;">${found.chineseA}</div>
+                    </div>
+                `;
+            }
+        }
         // 處理 Part9 的顯示邏輯 (顯示英文+中文)
-        else if (typeof val === 'object' && val.chinese) {
-            displayText = `<b>${val.word}</b><br><span style="font-size:14px;color:#666">${val.chinese}</span>`;
+        else if (currentTab === 'part9') {
+            const found = part9Questions.find(q => q.word === val);
+            if (found) {
+                displayText = `
+                    <div style="text-align: left; line-height: 1.4;">
+                        <div style="color: #000; font-weight: bold;">${found.word}</div>
+                        <div style="font-size:14px;color:#666">${found.chinese}</div>
+                    </div>
+                `;
+            }
         }
 
         item.innerHTML = `
@@ -940,4 +991,22 @@ function removeBookmarkFromList(val) {
             renderReadingList();
         }
     }
+}
+
+// ✅ 新增：在閱讀列表中點擊星號時的收藏/取消收藏
+function toggleReadingBookmark(word) {
+    const list = bookmarks.glossary;
+    const idx = list.findIndex(item => {
+        const itemText = (typeof item === 'object') ? item.word : item;
+        return itemText === word;
+    });
+
+    if (idx > -1) {
+        list.splice(idx, 1);
+    } else {
+        list.push(word);
+    }
+
+    saveBookmarks();
+    renderReadingList();
 }

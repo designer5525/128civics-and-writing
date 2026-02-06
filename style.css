@@ -332,13 +332,16 @@
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             color: var(--white);
             font-size: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 2px 7px rgba(110, 143, 251, 0.263);
         }
+
+    
         
        /* 1. 基礎樣式：預設狀態（白色背景，用於練習中） */
 .main-action-btn {
@@ -393,6 +396,8 @@ button#main-btn.main-action-btn.colorful {
             align-items: center;
             gap: 8px;
         }
+
+       
 
         .bookmarked { color: #FFD700; } 
 
